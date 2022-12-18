@@ -7,10 +7,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, windows-2022, macos-11]
-        vi: [neovim, vim]
-        cp: [system, copy, hardlink, symlink]
-        dl: [git, curl, wget]
+        os: [ubuntu-20.04, macos-11]
+        v: [v8.1.2269, v8.1.2300, v8.1.2424]
+        vi: [vim]
+        cp: [system]
+        dl: [git]
     steps:
       - id: check
         if: ${{ (matrix.os == 'windows-2022' && matrix.dl == 'wget') ||
@@ -33,17 +34,17 @@ jobs:
         if: ${{ steps.check.conclusion == 'skipped' }}
         id: vim
         with:
-          version: 'stable'
+          version: ${{ matrix.v }}
           neovim: ${{ matrix.vi == 'neovim' }}
 
-      - name: Run tests with ${{ matrix.dl }} and ${{ matrix.cp }}
+      - name: Run tests with ${{ matrix.dl }} and ${{ matrix.cp }} and ${{ matrix.v }}
         if: ${{ steps.check.conclusion == 'skipped' }}
         timeout-minutes: 5
         env:
           JETPACK_DOWNLOAD_METHOD: ${{ matrix.dl }}
           JETPACK_COPY_METHOD: ${{ matrix.cp }}
           THEMIS_VIM: ${{ steps.vim.outputs.executable }}
-        run: ./vim-themis/bin/themis ./test/test.vim
+        run: ./vim-themis/bin/themis ./test/test.vim --target self
   post-test:
     name: All tests passed
     runs-on: ubuntu-20.04

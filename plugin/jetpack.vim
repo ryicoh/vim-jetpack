@@ -337,7 +337,12 @@ function! s:merge_plugins() abort
   " Delete old directories
   for dir in glob(s:optdir . '/*', '', 1)
     let pkg_name = fnamemodify(dir, ':t')
+    echomsg 'delete old dir'
+    echomsg 'pkg_name: ' pkg_name
     let is_jetpack = pkg_name == 'vim-jetpack' || pkg_name == 'vim-jetpack.git'
+
+    echomsg 'is_jetpack: ' is_jetpack
+    echomsg 'has_key(s:declared_packages, pkg_name): ' has_key(s:declared_packages, pkg_name)
 
     if has_key(s:declared_packages, pkg_name) && is_jetpack
       continue
@@ -345,9 +350,17 @@ function! s:merge_plugins() abort
 
     if !has_key(s:declared_packages, pkg_name)
      \ || s:declared_packages[pkg_name].output !~# 'Already up to date.'
-      if is_jetpack && !s:ask('Delete "' . pkg_name . '"?')
-        call s:ask("Please add the following snippet: \"Jetpack 'tani/vim-jetpack', {'opt': 1}\"")
+      echomsg 'delete target'
+      if is_jetpack
+        if !s:ask('Delete "' . pkg_name . '"? (y/N)')
+          echomsg 'got "NO", return'
+          call s:ask("Please add the following snippet: \"Jetpack 'tani/vim-jetpack', {'opt': 1}\" (Enter)")
+        else
+          echomsg 'got "YES", going to delete'
+          call delete(dir, 'rf')
+        endif
       else
+        echomsg 'it isnt jetpack'
         call delete(dir, 'rf')
       endif
     endif
@@ -699,15 +712,13 @@ endfunction
 " s:ask() from junegunn/plug.vim
 " https://github.com/junegunn/vim-plug/blob/ddce935b16fbaaf02ac96f9f238deb04d4d33a31/plug.vim#L316-L324
 " MIT License: https://github.com/junegunn/vim-plug/blob/88cc9d78687dd309389819f85b39368a4fd745c8/LICENSE
-function! s:ask(message, ...)
-  call inputsave()
-  echohl WarningMsg
+function! s:ask(message)
+  echomsg "run input function: msg: " . a:message
+  let answer = input(a:message)
+  "echo "\r"
 
-  let answer = input(a:message.(a:0 ? ' (y/N/a) ' : ' (y/N) '))
-  echohl None
-  call inputrestore()
-  echo "\r"
-  return (a:0 && answer =~? '^a') ? 2 : (answer =~? '^y') ? 1 : 0
+  echomsg 'answer: ' answer
+  return (answer =~? '^y') ? 1 : 0
 endfunction
 
 function! jetpack#tap(name) abort
