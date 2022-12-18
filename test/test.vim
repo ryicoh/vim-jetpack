@@ -302,7 +302,7 @@ function s:suite.self_delete()
   " If you press "no", nothing will happen.
   augroup SelfDeletePressKey
     au!
-    au CmdlineEnter * call feedkeys("no\<CR>", "n")
+    au CmdlineEnter * call feedkeys("n\<CR>", "n")
   augroup END
   call jetpack#sync()
   call s:assert.isdirectory(opt_path)
@@ -310,7 +310,7 @@ function s:suite.self_delete()
   " If you press "yes", it will delete the directory
   augroup SelfDeletePressKey
     au!
-    autocmd CmdlineEnter * call feedkeys("yes\<CR>", "n")
+    autocmd CmdlineEnter * call feedkeys("y\<CR>", "n")
   augroup END
   call jetpack#sync()
   call s:assert.isnotdirectory(opt_path)
