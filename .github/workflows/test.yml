@@ -8,7 +8,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-20.04, macos-11]
-        v: [v8.1.2269, v8.1.2300, v8.1.2424]
+        v: [stable]
         vi: [vim]
         cp: [system]
         dl: [git]
