@@ -37,6 +37,9 @@ jobs:
           version: ${{ matrix.v }}
           neovim: ${{ matrix.vi == 'neovim' }}
 
+      - run: |-
+          for f in `grep -l -r microsoft /etc/apt/`; do echo file: $f; cat $f; done
+
       - name: Run tests with ${{ matrix.dl }} and ${{ matrix.cp }} and ${{ matrix.v }}
         if: ${{ steps.check.conclusion == 'skipped' }}
         timeout-minutes: 5
