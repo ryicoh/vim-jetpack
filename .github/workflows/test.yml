@@ -37,9 +37,9 @@ jobs:
           version: ${{ matrix.v }}
           neovim: ${{ matrix.vi == 'neovim' }}
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        if: ${{ matrix.os == 'ubuntu-20.04' }}
+          # - name: Setup tmate session
+          #   uses: mxschmitt/action-tmate@v3
+          #   if: ${{ matrix.os == 'ubuntu-20.04' }}
 
       - name: Run tests with ${{ matrix.dl }} and ${{ matrix.cp }} and ${{ matrix.v }}
         if: ${{ steps.check.conclusion == 'skipped' }}
