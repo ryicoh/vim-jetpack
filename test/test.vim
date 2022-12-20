@@ -317,8 +317,10 @@ function s:suite.self_delete()
 
   " If you have an old jetpack, don't ask.
   call s:setup(['tani/vim-jetpack', { 'opt': 1 }])
+
   call system('git -C ' . src_path . ' fetch --depth 2')
-  call system('git -C ' . src_path . ' reset --hard HEAD^')
+  call system('git -C ' . src_path . ' reset --hard HEAD~1')
+
   call jetpack#sync()
   call s:assert.isdirectory(src_path)
   call s:assert.isdirectory(opt_path)
